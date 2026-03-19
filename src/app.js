@@ -3,9 +3,9 @@ const cookieParser = require("cookie-parser");
 const app = express();
 const authRouter = require("./routes/auth.routes");
 
+app.use(cookieParser());    
 app.use(express.json());
 app.use("/api/auth", authRouter);   
-app.use(cookieParser());    
 
 
 module.exports = app;

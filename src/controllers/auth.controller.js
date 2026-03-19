@@ -8,22 +8,29 @@ const jwt = require("jsonwebtoken");
 
 
 async function userRegisterController(req, res) {
-    const { name, email, password } = req.body;
+    try {
+        const { name, email, password } = req.body;
 
-    const isExist = await userModel.findOne({ email:email });
-    if (isExist) {
-        return res.status(422).json({ message: "User already exists with email", status: "failed" });
+        const isExist = await userModel.findOne({ email: email });
+        if (isExist) {
+            return res.status(422).json({ message: "User already exists with email", status: "failed" });
+        }
+
+        const user = await userModel.create({ name, email, password });
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "3d" });
+        res.cookie("token", token);
+        return res.status(201).json({
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+            },
+            token: token,
+        });
+    } catch (error) {
+        console.error("Register error:", error.message);
+        return res.status(500).json({ message: error.message || "Internal server error", status: "failed" });
     }
-
-    const user = await userModel.create({ name, email, password });
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "3d" });
-    res.cookie("token", token);
-    return res.status(201).json({ user : {
-        _id: user._id,
-        name: user.name,
-        email: user.email,  
-    }, token: token});
-
-}   
+}
 
 module.exports = { userRegisterController };
