@@ -52,4 +52,26 @@ async function sendRegistrationEmail (userEmail, name){
     await sendEmail(userEmail, subject, text, html);
 }
 
-module.exports = {sendRegistrationEmail, sendEmail, transporter};   
+async function sendTransactionEmail (userEmail, name, amount){
+    const subject = "Transaction successful";
+    const text = `Hi ${name}, 
+    Thank you for using payment service. \n Your transaction of amount ${amount} has been completed successfully. \n You can now login to your account using your email and password.`;
+    const html = `<h1>Hi ${name},</h1>
+    <p>Thank you for using payment service. </p>
+    <p>Your transaction of amount ${amount} has been completed successfully. </p>
+    <p>You can now login to your account using your email and password.</p>`;
+    await sendEmail(userEmail, subject, text, html);
+}
+
+async function sendTransactionFailedEmail (userEmail, name, amount){
+      const subject = "Transaction failed";
+    const text = `Hi ${name}, 
+    Thank you for using payment service. \n Your transaction of amount ${amount} has been failed. \n You can now login to your account using your email and password.`;
+    const html = `<h1>Hi ${name},</h1>
+    <p>Thank you for using payment service. </p>
+    <p>Your transaction of amount ${amount} has been failed. </p>
+    <p>You can now login to your account using your email and password.</p>`;
+    await sendEmail(userEmail, subject, text, html);
+}
+
+module.exports = {sendRegistrationEmail, sendTransactionEmail, sendTransactionFailedEmail};   
